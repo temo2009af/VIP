@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"> <!-- Added dir="rtl" for proper Arabic layout -->
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title> - TEMO </title>
+
+<!-- Bootstrap CSS - أحدث إصدار من CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+<!-- Font Awesome CSS - أحدث إصدار من CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<!-- Google Fonts - Cairo (خط احترافي للغة العربية) -->
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
+
+<style>
+  /* تعريف الألوان والتدرجات عبر متغيرات CSS */
+  :root {
+    --primary-color: #2e3b5e; /* لون أزرق داكن جديد */
+    --secondary-color: #4a6fa5; /* أزرق أفتح */
+    --accent-color: #6a0572; /* بنفسجي جذاب */
+    --gradient-one: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    --gradient-two: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+    --card-bg-light: rgba(255, 255, 255, 0.1);
+    --card-bg-dark: rgba(0, 0, 0, 0.3);
+    --text-color: #f8f9fa; /* أبيض فاتح */
+    --success-color: #28a745;
+    --error-color: #dc3545;
+    --warning-color: #ffc107;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Cairo', sans-serif; /* استخدام خط القاهرة */
+    background-image: url('https://files.catbox.moe/c9tqx1.jpg'); /* الخلفية الأصلية */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* لتأثير Parallax بسيط */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px;
+    color: var(--text-color);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    overflow-x: hidden; /* لمنع التمرير الأفقي */
+    position: relative; /* لتمكين تأثيرات الخلفية */
+  }
+
+  /* تأثيرات الخلفية التفاعلية */
+  body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at top left, rgba(74, 111, 165, 0.2), transparent 40%),
+                radial-gradient(circle at bottom right, rgba(106, 5, 114, 0.2), transparent 40%);
+    animation: backgroundPulse 15s infinite alternate;
+    z-index: -1; /* خلف المحتوى */
+  }
+
+  @keyframes backgroundPulse {
+    0% { opacity: 0.8; transform: scale(1); }
+    100% { opacity: 1; transform: scale(1.03); }
+  }
+
+  h1 {
+    font-size: 3.5em;
+    margin-bottom: 25px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-shadow: 0 0 15px var(--accent-color), 0 0 10px rgba(0,0,0,0.8);
+    position: relative;
+    animation: fadeInDown 1s ease-out;
+  }
+
+  /* الأنماط العامة للبطاقات */
+  .card-custom {
+    background: var(--card-bg-light);
+    backdrop-filter: blur(10px) brightness(1.1); /* تأثير زجاجي أنيق */
+    -webkit-backdrop-filter: blur(10px) brightness(1.1);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transform-style: preserve-3d; /* لتأثيرات 3D */
+    transition: all 0.4s ease-in-out;
+  }
+
+  .card-custom:hover {
+    transform: translateY(-5px) scale(1.01) perspective(1000px) rotateY(1deg) rotateX(1deg);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), inset 0 0 20px rgba(255, 255, 255, 0.15);
+  }
+
+  /* صورة الملف الشخصي والصورة الشخصية */
+  .profile-img, .personal-img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border: 5px solid var(--accent-color);
+    object-fit: cover;
+    margin-bottom: 20px;
+    box-shadow: 0 0 20px rgba(106, 5, 114, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.3);
+    transition: transform 0.4s ease, border-color 0.4s ease;
+    animation: fadeIn 1.5s ease-out;
+  }
+  .profile-img:hover, .personal-img:hover {
+    transform: scale(1.08) rotateZ(3deg);
+    border-color: var(--secondary-color);
+  }
+
+  /* أزرار تفاعلية */
+  .btn-social {
+    padding: 15px 25px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: all 0.4s ease-in-out;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    background: var(--gradient-one); /* تدرج افتراضي */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transform-style: preserve-3d;
+  }
+
+  /* تأثيرات 3D بسيطة على الأزرار */
+  .btn-social::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
+    transform: translateX(-100%);
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .btn-social:hover::before {
+    transform: translateX(0%);
+  }
+
+  .btn-social:hover {
+    transform: translateY(-3px) scale(1.05) perspective(1000px) rotateY(2deg);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    opacity: 0.95;
+  }
+  .btn-social:active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  /* ألوان الأزرار حسب المنصة مع تدرجات */
+  .youtube { background: linear-gradient(135deg, #FF0000, #C40000); }
+  .facebook { background: linear-gradient(135deg, #3b5998, #2a4176); }
+  .instagram { background: linear-gradient(135deg, #E1306C, #C22055); }
+  .twitter { background: linear-gradient(135deg, #1DA1F2, #0D8CDA); }
+  .telegram { background: linear-gradient(135deg, #0088cc, #006FB3); }
+
+  /* حقول الإدخال */
+  .form-control-custom {
+    background: var(--card-bg-dark);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    color: var(--text-color);
+    padding: 12px 20px;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.4);
+  }
+  .form-control-custom::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .form-control-custom:focus {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.25rem rgba(106, 5, 114, 0.4);
+    outline: none;
+  }
+
+  /* منطقة رفع الملفات (Drag & Drop) */
+  .drop-zone {
+    border: 3px dashed var(--secondary-color);
+    border-radius: 15px;
+    padding: 40px 20px;
+    text-align: center;
+    font-size: 1.2em;
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+  }
+  .drop-zone:hover, .drop-zone.dragover {
+    border-color: var(--accent-color);
+    background: rgba(0, 0, 0, 0.4);
+    color: var(--text-color);
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.7), 0 0 10px var(--accent-color);
+  }
+  .drop-zone-icon {
+    font-size: 3em;
+    margin-bottom: 10px;
+    color: var(--secondary-color);
+  }
+
+  /* Spinner (دوائر الفحص) */
+  .spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+    color: var(--text-color);
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+  .spinner-custom {
+    width: 60px;
+    height: 60px;
+    border: 8px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--accent-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* شريط التقدم (Progress Bar) */
+  .progress-custom {
+    height: 25px;
+    border-radius: 12px;
+    background-color: rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.4);
+  }
+  .progress-bar-custom {
+    background: var(--gradient-two);
+    border-radius: 10px;
+    transition: width 0.5s ease-in-out;
+    text-align: center;
+    color: var(--text-color);
+    font-weight: bold;
+    line-height: 25px; /* لجعل النص في المنتصف عموديا */
+  }
+
+  /* تنبيهات (Toast Notifications) */
+  .toast-container-custom {
+    position: fixed;
+    top: 20px; /* From right, because dir is rtl */
+    left: 20px; /* From bottom for toast positioning */
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: slideInFromLeft 0.5s ease-out;
+  }
+
+  .toast-custom {
+    background: rgba(46, 59, 94, 0.9); /* Primary color with opacity */
+    color: var(--text-color);
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    min-width: 250px;
+    animation: fadeInOut 0.5s ease forwards;
+    position: relative;
+    overflow: hidden; /* Hide the color border spill */
+  }
+  .toast-custom.success { background: rgba(40, 167, 69, 0.9); }
+  .toast-custom.error { background: rgba(220, 53, 69, 0.9); }
+  .toast-custom.warning { background: rgba(255, 193, 7, 0.9); }
+
+  .toast-custom::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 8px;
+    background: var(--accent-color);
+  }
+  .toast-custom.success::after { background: var(--success-color); }
+  .toast-custom.error::after { background: var(--error-color); }
+  .toast-custom.warning::after { background: var(--warning-color); }
+
+  @keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-20px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-20px); }
+  }
+
+  /* قسم النتائج */
+  .results-section {
+    background: var(--card-bg-light);
+    backdrop-filter: blur(8px);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    margin-top: 30px;
+    width: 100%;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .results-item {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.3s ease;
+  }
+  .results-item:hover {
+    background: rgba(0, 0, 0, 0.5);
+  }
+  .results-item strong {
+    color: var(--accent-color);
+  }
+  .results-item .status {
+    font-weight: bold;
+  }
+  .results-item .status.found { color: var(--success-color); }
+  .results-item .status.not-found { color: var(--error-color); }
+
+  /* شاشة البداية (Splash Screen) */
+  #splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--primary-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    color: var(--text-color);
+    font-size: 2em;
+    font-weight: bold;
+    opacity: 1;
+    transition: opacity 1s ease-out, visibility 1s ease-out;
+  }
+  #splash-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+  .splash-spinner {
+    border: 6px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--accent-color);
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+  }
+  .splash-text {
+    animation: pulse 1.5s infinite alternate;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.05); opacity: 0.9; }
+  }
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-50px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* ميديا كويري لتحسين الاستجابة على الشاشات الصغيرة */
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 15px;
+    }
+    .profile-img, .personal-img {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 15px;
+    }
+    .btn-social {
+      font-size: 1em;
+      padding: 12px 20px;
+    }
+    .card-custom {
+      padding: 20px;
+    }
+    .drop-zone {
+      padding: 30px 15px;
+      font-size: 1em;
+    }
+    .spinner-custom {
+      width: 40px;
+      height: 40px;
+      border-width: 6px;
+    }
+    .toast-container-custom {
+        top: 15px;
+        left: 15px;
+    }
+    .toast-custom {
+        min-width: unset;
+        width: 90%;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- حاوية التنبيهات (Toast Notifications) -->
+<div class="toast-container-custom" id="toastContainer"></div>
+
+<div class="container d-flex flex-column align-items-center mb-5">
+  <h1 class="text-center mb-4">أمير السوري</h1>
+
+  <!-- الصورة الشخصية -->
+  <img src="https://files.catbox.moe/0qjl70.jpg" alt="صورة أمير السوري" class="personal-img" />
+
+  <!-- قسم الروابط الاجتماعية - الآن داخل بطاقة أنيقة ومستخدمًا Bootstrap Grid -->
+  <div class="card-custom col-12 col-md-8 col-lg-6 mx-auto mb-5 text-center">
+    <h2 class="h4 mb-4" style="color: var(--accent-color); font-weight: bold; text-shadow: none;">روابـطـي المـهـمـة</h2>
+    <div class="row g-3 justify-content-center">
+      <div class="col-12 col-sm-6 col-md-4">
+        <a href="https://t.me/SYRPY" target="_blank" class="text-decoration-none">
+          <div class="btn-social telegram w-100 d-flex align-items-center justify-content-center">
+            <i class="fab fa-telegram me-2"></i> TEMO
+          </div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4">
+        <a href="https://www.facebook.com/share/1LXtdKJ632/" target="_blank" class="text-decoration-none">
+          <div class="btn-social facebook w-100 d-flex align-items-center justify-content-center">
+            <i class="fab fa-facebook-f me-2"></i> تابع على فيسبوك
+          </div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4">
+        <a href="https://instagram.com/waseem2009a" target="_blank" class="text-decoration-none">
+          <div class="btn-social instagram w-100 d-flex align-items-center justify-content-center">
+            <i class="fab fa-instagram me-2"></i> تابع على إنستغرام
+          </div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4">
+        <a href="https://t.me/V_Y_I_4"_blank" class="text-decoration-none">
+          <div class="btn-social telegram w-100 d-flex align-items-center justify-content-center">
+            <i class="fab fa-telegram-f me-2"></i> 𝗣𝗬 𝗧𝗘𝗠𝗢
+          </div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4">
+        <a href="https://t.me/oio_r9" target="_blank" class="text-decoration-none">
+          <div class="btn-social telegram w-100 d-flex align-items-center justify-content-center">
+            <i class="fab fa-telegram me-2"></i> القناه الاساسية
+          </div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4">
+        <a href="https://t.me/lf_v6" target="_blank" class="text-decoration-none">
+          <div class="btn-social telegram w-100 d-flex align-items-center justify-content-center">
+            <i class="fab fa-telegram me-2"></i>  كروب حل مشاكل بايثون
+          </div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4">
+        <a href="https://t.me/TEMO_9" target="_blank" class="text-decoration-none">
+          <div class="btn-social telegram w-100 d-flex align-items-center justify-content-center">
+          <i class="fab fa-telegram me-2"></i>  كروب لازم تفوت فيه
+          </div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4">
+        <a href="https://t.me/syria_py" target="_blank" class="text-decoration-none">
+          <div class="btn-social telegram w-100 d-flex align-items-center justify-content-center">
+            <i class="fab fa-telegram-plane me-2"></i>ادوات بايثون - Tools python
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+<div class="container d-flex flex-column
+      <div class="col-12 col-sm-6 col-md-4">
+        <a href="https://t.me/TEMO_SHOPPING_BOT" target="_blank" class="text-decoration-none">
+          <div class="btn-social telegram w-100 d-flex align-items-center justify-content-center">
+            <i class="fab fa-telegram-plane me-2"></i> بـوت ادوات
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- قسم الفحص المتقدم / البحث عن معلومات المستخدم -->
+  <div class="card-custom col-12 col-md-8 col-lg-7 mx-auto text-center" id="scanSection">
+    <h2 class="h4 mb-4" style="color: var(--accent-color); font-weight: bold; text-shadow: none;">أدوات فحص وجمع المعلومات</h2>
+    <p class="text-white-50 mb-4">
+      استخدم هذه الأدوات للحصول على معلومات المستخدمين من خلال حساباتهم بطريقة آمنة وفعالة.
+    </p>
+
+    <div class="input-group mb-4">
+      <input type="text" class="form-control-custom w-100" id="accountInput" placeholder="أدخل اسم مستخدم أو معرف حساب للفحص...">
+    </div>
+
+    <div class="drop-zone" id="dropZone">
+      <i class="fas fa-cloud-upload-alt drop-zone-icon"></i>
+      <p class="mb-0">اسحب وأفلت ملف الحسابات هنا أو <br> انقر لاختيار ملف (txt, csv)</p>
+      <input type="file" id="fileInput" hidden accept=".txt,.csv">
+      <p id="fileNameDisplay" class="text-white-75 small mt-2"></p>
+    </div>
+
+    <button class="btn-social w-100 py-3 mt-3" id="startScanBtn" onclick="startScan()">
+      <i class="fas fa-play-circle me-2"></i> بدء الفحص والبحث
+    </button>
+
+    <div class="spinner-container d-none" id="scanSpinner">
+      <div class="spinner-custom"></div>
+      <span id="spinnerMessage">جاري الفحص... يرجى الانتظار</span>
+    </div>
+
+    <div class="progress progress-custom mt-4 d-none" id="progressBarContainer">
+      <div class="progress-bar progress-bar-custom" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="scanProgressBar">0%</div>
+    </div>
+
+    <div class="results-section mt-4 d-none" id="resultsSection">
+      <h3 class="h5 mb-3" style="color: var(--text-color);">نتائج الفحص:</h3>
+      <div id="resultsList">
+        <!-- النتائج ستضاف هنا بواسطة JavaScript -->
+      </div>
+      <button class="btn-social btn-sm py-2 px-3 mt-3 w-100" onclick="exportResults()">
+          <i class="fas fa-file-export me-2"></i> تصدير النتائج
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ملفات جافاسكريبت لـ Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eE+R7PRxH3M" crossorigin="anonymous"></script>
+
+<script>
+  // الأصوات
+  const clickSound = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'); // مثال صوت ضغط (يمكن استبداله)
+  const successSound = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3'); // مثال صوت نجاح
+  const errorSound = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3');   // مثال صوت خطأ
+
+  // تشغيل صوت عند الضغط على الأزرار
+  document.querySelectorAll('.btn-social').forEach(button => {
+    button.addEventListener('click', () => {
+      clickSound.play().catch(e => console.log("خطأ في تشغيل الصوت:", e));
+    });
+  });
+
+  // شاشة البداية
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('splash-screen').classList.add('hidden');
+      clickSound.play().catch(e => console.log("خطأ في تشغيل الصوت:", e)); // صوت عند إخفاء الشاشة
+    }, 2000); // إخفاء بعد 2 ثانية
+  });
+
+  // دوال التنبيهات (Toast Notifications)
+  const toastContainer = document.getElementById('toastContainer');
+  function showToast(message, type = 'info', duration = 3000) {
+    const toast = document.createElement('div');
+    toast.className = `toast-custom ${type} animate__animated animate__fadeInRight`; // إضافة animation class
+    toast.innerHTML = `<span>${message}</span>`;
+    toastContainer.prepend(toast); // إضافة التوست في البداية
+
+    setTimeout(() => {
+      toast.classList.remove('animate__fadeInRight');
+      toast.classList.add('animate__fadeOutRight'); // إضافة animation class للإخفاء
+      toast.addEventListener('animationend', () => toast.remove());
+    }, duration);
+
+    // تشغيل صوت التنبيه المناسب
+    if (type === 'success') successSound.play().catch(e => {});
+    else if (type === 'error') errorSound.play().catch(e => {});
+  }
+
+  // منطق رفع الملفات (Drag & Drop)
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('fileInput');
+  const fileNameDisplay = document.getElementById('fileNameDisplay');
+
+  dropZone.addEventListener('click', () => fileInput.click());
+
+  fileInput.addEventListener('change', (e) => {
+    handleFiles(e.target.files);
+  });
+
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('dragover');
+  });
+
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('dragover');
+  });
+
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+  });
+
+  function handleFiles(files) {
+    if (files.length > 0) {
+      const file = files[0];
+      fileNameDisplay.textContent = `الملف المختار: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+      showToast(`تم اختيار الملف: ${file.name}`, 'info');
+      // هنا يمكنك معالجة الملف للقراءة (مثلاً، باستخدام FileReader)
+      // For this front-end only example, we just display the name.
+    }
+  }
+
+  // محاكاة عملية الفحص
+  const startScanBtn = document.getElementById('startScanBtn');
+  const scanSpinner = document.getElementById('scanSpinner');
+  const spinnerMessage = document.getElementById('spinnerMessage');
+  const progressBarContainer = document.getElementById('progressBarContainer');
+  const scanProgressBar = document.getElementById('scanProgressBar');
+  const resultsSection = document.getElementById('resultsSection');
+  const resultsList = document.getElementById('resultsList');
+  const accountInput = document.getElementById('accountInput');
+
+  let scanInterval;
+  let currentProgress = 0;
+  let totalAccounts = 0; // سيتم تحديثه بناءً على الملف المرفوع أو عدد الحسابات
+
+  function startScan() {
+    const inputAccount = accountInput.value.trim();
+    if (!inputAccount && !fileNameDisplay.textContent) {
+      showToast('الرجاء إدخال اسم حساب أو رفع ملف لبدء الفحص!', 'error');
+      errorSound.play().catch(e => {});
+      return;
+    }
+
+    // تهيئة حالة الفحص
+    currentProgress = 0;
+    scanProgressBar.style.width = '0%';
+    scanProgressBar.setAttribute('aria-valuenow', 0);
+    scanProgressBar.textContent = '0%';
+    resultsList.innerHTML = ''; // مسح النتائج السابقة
+    resultsSection.classList.add('d-none'); // إخفاء قسم النتائج
+
+    startScanBtn.disabled = true;
+    startScanBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> جاري الفحص...';
+    scanSpinner.classList.remove('d-none');
+    progressBarContainer.classList.remove('d-none');
+
+    showToast('بدء عملية الفحص...', 'info');
+
+    // محاكاة الفحص (يمكنك استبدال هذا بالاتصال بالباك إند)
+    // إذا كان هناك ملف مرفوع، سنفترض عدد حسابات من الملف
+    if (fileNameDisplay.textContent) {
+        totalAccounts = 50 + Math.floor(Math.random() * 50); // عدد عشوائي لمحاكاة
+    } else {
+        totalAccounts = 1; // إذا كان هناك حساب واحد فقط
+    }
+
+    let scannedAccounts = 0;
+
+    scanInterval = setInterval(() => {
+      scannedAccounts++;
+      currentProgress = (scannedAccounts / totalAccounts) * 100;
+      if (currentProgress > 100) currentProgress = 100; // تأكد ألا يتجاوز 100%
+
+      scanProgressBar.style.width = `${currentProgress.toFixed(0)}%`;
+      scanProgressBar.setAttribute('aria-valuenow', currentProgress.toFixed(0));
+      scanProgressBar.textContent = `${currentProgress.toFixed(0)}%`;
+      spinnerMessage.textContent = `جاري فحص ${scannedAccounts} من ${totalAccounts} حساب...`;
+
+      if (scannedAccounts <= totalAccounts) {
+        // إضافة نتائج عشوائية
+        const accountName = `user_${Math.floor(Math.random() * 10000)}`;
+        const status = Math.random() > 0.5 ? 'found' : 'not-found';
+        const platform = ['Facebook', 'Instagram', 'Twitter', 'Telegram', 'YouTube'][Math.floor(Math.random() * 5)];
+        addResult(accountName, platform, status);
+      }
+
+      if (scannedAccounts >= totalAccounts) {
+        clearInterval(scanInterval);
+        endScan();
+      }
+    }, 100); // تحديث سريع للمحاكاة
+  }
+
+  function endScan() {
+    startScanBtn.disabled = false;
+    startScanBtn.innerHTML = '<i class="fas fa-play-circle me-2"></i> بدء الفحص والبحث';
+    scanSpinner.classList.add('d-none');
+    progressBarContainer.classList.add('d-none');
+    resultsSection.classList.remove('d-none'); // إظهار قسم النتائج
+    showToast('اكتمل الفحص بنجاح!', 'success');
+    successSound.play().catch(e => {});
+  }
+
+  function addResult(account, platform, status) {
+    const item = document.createElement('div');
+    item.className = 'results-item';
+    item.innerHTML = `
+      <div>
+        <strong>${account}</strong> on ${platform}
+      </div>
+      <span class="status ${status}">${status === 'found' ? 'موجود' : 'غير موجود'}</span>
+    `;
+    resultsList.prepend(item); // إضافة أحدث نتيجة في الأعلى
+  }
+
+  function exportResults() {
+      showToast('تم تصدير النتائج بنجاح! (محاكاة)', 'success');
+      // هنا يمكن إضافة منطق حقيقي لتصدير النتائج كملف CSV أو TXT
+  }
+</script>
+
+<!-- حقوق الملكية في نهاية السكربت -->
+مرحبا بكم في عالم TEMO .
+</body>
+</html>
